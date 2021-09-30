@@ -214,7 +214,7 @@ public class ObjectBrowserDialog extends Dialog {
                     try {
                         treeViewer.refresh();
                         if (showConnected) {
-                            treeViewer.expandAll();
+                            treeViewer.expandToLevel(2, false);
                         }
                     } finally {
                         treeViewer.getControl().setRedraw(true);
