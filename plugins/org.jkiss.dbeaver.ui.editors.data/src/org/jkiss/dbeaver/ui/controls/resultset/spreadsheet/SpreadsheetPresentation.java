@@ -1883,6 +1883,32 @@ public class SpreadsheetPresentation extends AbstractPresentation implements IRe
             return ALIGN_LEFT;
         }
 
+        @Nullable
+        @Override
+        public Font getCellFont(@Nullable Object colElement, Object rowElement) {
+            if (!controller.isRecordMode()) {
+                final DBDAttributeBinding attr = (DBDAttributeBinding) colElement;
+                final ResultSetRow row = (ResultSetRow) rowElement;
+                if (attr != null && isShowAsCheckbox(attr)) {
+                    Object cellValue = controller.getModel().getCellValue(attr, row);
+                    if (cellValue instanceof Number) {
+                        cellValue = ((Number) cellValue).byteValue() != 0;
+                    }
+                    if (DBUtils.isNullValue(cellValue) || cellValue instanceof Boolean) {
+                        switch (booleanStyles.getStyle((Boolean) cellValue).getFont()) {
+                            case NORMAL:
+                                return null;
+                            case ITALIC:
+                                return italicFont;
+                            case BOLD:
+                                return spreadsheet.getBoldFont();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         @Override
         public int getColumnPinIndex(@NotNull Object element) {
             if (!controller.isRecordMode()) {
